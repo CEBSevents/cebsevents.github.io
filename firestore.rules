@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ----- Events -----
+    // Anyone can read events (public calendar)
+    // Only authenticated + authorized users can create
+    // Creator or admin can update/delete
+    match /events/{eventId} {
+      allow read: if true;
+
+      allow create: if request.auth != null
+        && exists(/databases/$(database)/documents/authorizedUsers/$(request.auth.token.email))
+        && (
+            request.resource.data.clubName == get(/databases/$(database)/documents/authorizedUsers/$(request.auth.token.email)).data.clubName
+            || getRole(request.auth.token.email) == 'admin'
+        );
+
+      allow update: if request.auth != null
+        && (resource.data.createdBy == request.auth.uid || getRole(request.auth.token.email) == 'admin')
+        && (
+            request.resource.data.clubName == get(/databases/$(database)/documents/authorizedUsers/$(request.auth.token.email)).data.clubName
+            || getRole(request.auth.token.email) == 'admin'
+        );
+
+      allow delete: if request.auth != null
+        && (resource.data.createdBy == request.auth.uid || getRole(request.auth.token.email) == 'admin');
+    }
+
+    // ----- Authorized Users -----
+    // Any authenticated user can read (to check their own authorization)
+    // Only admins can write (add/remove authorized users)
+    match /authorizedUsers/{email} {
+      allow read: if request.auth != null;
+
+      allow write: if request.auth != null
+        && getRole(request.auth.token.email) == 'admin';
+    }
+
+    // Helper: get role for an email
+    function getRole(email) {
+      return get(/databases/$(database)/documents/authorizedUsers/$(email)).data.role;
+    }
+  }
+}

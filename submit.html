@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Event - CEBS Event Calendar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2C3E50;">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-calendar3"></i> CEBS Event Calendar
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-calendar3"></i> Calendar</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="submit.html"><i class="bi bi-plus-circle"></i> Submit Event</a></li>
+                </ul>
+                <div id="auth-nav"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5" style="max-width: 800px;">
+        
+        <!-- FORM VIEW -->
+        <div id="form-view" class="form-container">
+            <div class="form-section p-4 bg-white shadow-sm rounded-3 border-top border-primary border-4 mb-4">
+                <h3 class="form-section-title mb-1">Submit New Event</h3>
+                <p class="text-muted mb-0">Fill in the details below</p>
+            </div>
+            
+            <form id="event-form" class="bg-white shadow-sm rounded-3 p-4">
+                
+                <div class="mb-4">
+                    <label for="clubName" class="form-label fw-bold">Organising Club <span class="text-danger">*</span></label>
+                    <select id="clubName" class="form-select" required>
+                        <option value="" disabled selected>Select Club</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="eventName" class="form-label fw-bold">Name of Event <span class="text-danger">*</span></label>
+                    <input type="text" id="eventName" class="form-control" placeholder="e.g. Annual Tech Fest" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="eventDate" class="form-label fw-bold">Date of Event <span class="text-danger">*</span></label>
+                    <input type="date" id="eventDate" class="form-control" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Time <span class="text-danger">*</span></label>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text">From</span>
+                                <input type="time" id="startTime" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text">To</span>
+                                <input type="time" id="endTime" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Audience <span class="text-danger">*</span></label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="audience" id="aud-everyone" value="everyone" checked required>
+                        <label class="form-check-label" for="aud-everyone">Open to Everyone</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="audience" id="aud-members" value="members" required>
+                        <label class="form-check-label" for="aud-members">Club Members Only</label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="venue" class="form-label fw-bold">Venue <span class="text-danger">*</span></label>
+                    <select id="venue" class="form-select" required>
+                        <option value="" disabled selected>Select Venue</option>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                
+                <div id="venue-detail-container" class="venue-detail mb-4 d-none">
+                    <label id="venue-detail-label" for="venueDetail" class="form-label fw-bold">Detail</label>
+                    <div id="venue-detail-input-area">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="cf-turnstile" id="turnstile-widget" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired"></div>
+                </div>
+
+                <div id="form-error-msg" class="alert alert-danger d-none"></div>
+
+                <div class="text-end">
+                    <button type="submit" id="btn-submit" class="btn btn-primary px-4 py-2" disabled>
+                        <i class="bi bi-check-circle me-2"></i> Check & Submit Event
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- CLASH WARNING VIEW -->
+        <div id="clash-view" class="clash-warning bg-white shadow-sm rounded-3 p-4 d-none border border-warning">
+            <div class="text-center mb-4">
+                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                <h3 class="mt-2">⚠️ Scheduling Conflict Detected</h3>
+                <p class="text-muted">The following events are already scheduled at the same time and location:</p>
+            </div>
+            
+            <div id="clash-list" class="mb-4">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" id="btn-back-edit" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i> Go Back & Edit
+                </button>
+                <button type="button" id="btn-submit-anyway" class="btn btn-warning">
+                    <i class="bi bi-exclamation-circle me-2"></i> Submit Anyway
+                </button>
+            </div>
+        </div>
+
+        <!-- SUCCESS VIEW -->
+        <div id="success-view" class="success-card bg-white shadow-sm rounded-3 p-5 text-center d-none border-top border-success border-4">
+            <i class="bi bi-check-circle-fill text-success mb-3" style="font-size: 4rem;"></i>
+            <h2 class="mb-3">Event Submitted Successfully!</h2>
+            <p class="text-muted mb-4">Your event has been added to the calendar.</p>
+            
+            <div class="edit-link-box bg-light p-3 rounded mb-4 text-start">
+                <label class="form-label fw-bold text-muted small mb-1">Save this link to edit your event later:</label>
+                <div class="input-group">
+                    <input type="text" id="edit-link-input" class="form-control" readonly>
+                    <button class="btn btn-outline-secondary" type="button" id="btn-copy-link">
+                        <i class="bi bi-clipboard"></i> Copy Link
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <button type="button" id="btn-submit-another" class="btn btn-outline-primary">
+                    <i class="bi bi-plus-circle me-2"></i> Submit Another Event
+                </button>
+                <a href="index.html" class="btn btn-primary">
+                    <i class="bi bi-calendar3 me-2"></i> View Calendar
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="text-center py-4 mt-auto">
+        <p class="text-muted mb-0">&copy; 2026 CEBS Event Calendar</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/submit.js"></script>
+</body>
+</html>

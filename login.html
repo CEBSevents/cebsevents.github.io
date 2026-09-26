@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CEBS Event Calendar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2C3E50;">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-calendar3"></i> CEBS Event Calendar
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-calendar3"></i> Calendar</a></li>
+                    <li class="nav-item"><a class="nav-link" href="submit.html"><i class="bi bi-plus-circle"></i> Submit Event</a></li>
+                </ul>
+                <div id="auth-nav"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="login-container">
+                    <div class="card login-card shadow-sm border-0">
+                        <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #2C3E50, #3498DB);">
+                            <i class="bi bi-calendar3 fs-1 mb-2"></i>
+                            <h4 class="mb-1">Club Login</h4>
+                            <p class="mb-0 small text-white-50">Sign in with your college email</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <div id="status-message"></div>
+
+                            <form id="magic-link-form" class="mb-3">
+                                <div class="mb-3">
+                                    <label for="login-email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="login-email" placeholder="yourname@cbs.ac.in" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100" id="btn-magic-link">
+                                    <i class="bi bi-envelope-fill me-2"></i> Send Login Link
+                                </button>
+                            </form>
+
+                            <div class="d-flex align-items-center my-4">
+                                <hr class="flex-grow-1">
+                                <span class="mx-3 text-muted small">or</span>
+                                <hr class="flex-grow-1">
+                            </div>
+
+                            <form id="password-form">
+                                <div class="mb-3">
+                                    <label for="pwd-email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="pwd-email" placeholder="yourname@cbs.ac.in" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="pwd-password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="pwd-password" placeholder="Password" required>
+                                </div>
+                                <button type="submit" class="btn btn-outline-secondary w-100" id="btn-password">
+                                    <i class="bi bi-key-fill me-2"></i> Sign In with Password
+                                </button>
+                            </form>
+
+                            <div class="mt-4 text-center text-muted small">
+                                <p class="mb-0">Only authorized club in-charges can sign in. Contact the admin if you need access.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 mt-auto">
+        <p class="text-muted mb-0">&copy; 2026 CEBS Event Calendar</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        const statusDiv = document.getElementById('status-message');
+        
+        function showStatus(msg, type = 'danger') {
+            statusDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${msg}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth({
+                onReady: function(user) {
+                    if (user) {
+                        window.location.href = 'submit.html';
+                    }
+                }
+            });
+
+            completeSignIn().then(user => {
+                if(user) {
+                    window.location.href = 'submit.html';
+                }
+            }).catch(err => {
+                showStatus(err.message || 'Failed to complete sign in.');
+            });
+
+            document.getElementById('magic-link-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const btn = document.getElementById('btn-magic-link');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Sending...';
+                
+                try {
+                    await sendLoginLink(email);
+                    showStatus('Login link sent! Check your inbox.', 'success');
+                } catch (error) {
+                    showStatus(error.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-envelope-fill me-2"></i> Send Login Link';
+                }
+            });
+
+            document.getElementById('password-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('pwd-email').value;
+                const password = document.getElementById('pwd-password').value;
+                const btn = document.getElementById('btn-password');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Signing In...';
+                
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    window.location.href = 'submit.html';
+                } catch (error) {
+                    showStatus(error.message || 'Invalid email or password.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-key-fill me-2"></i> Sign In with Password';
+                }
+            });
+            
+            // Keep email inputs in sync
+            const email1 = document.getElementById('login-email');
+            const email2 = document.getElementById('pwd-email');
+            email1.addEventListener('input', () => email2.value = email1.value);
+            email2.addEventListener('input', () => email1.value = email2.value);
+        });
+    </script>
+</body>
+</html>
