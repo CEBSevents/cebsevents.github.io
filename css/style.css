@@ -4,44 +4,47 @@
 
 /* ---------- CSS Variables ---------- */
 :root {
-    --primary: #2C3E50;
-    --primary-light: #34495E;
-    --accent: #3498DB;
-    --success: #27AE60;
-    --warning: #F39C12;
-    --danger: #E74C3C;
-    --bg-light: #F5F7FA;
-    --text-muted: #6C757D;
-    --border-color: #DEE2E6;
-    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --card-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
+    /* Vibrant, student-friendly modern palette */
+    --primary: #4F46E5;      /* Indigo */
+    --primary-light: #6366F1;
+    --accent: #0EA5E9;       /* Light Blue / Cyan */
+    --success: #10B981;      /* Emerald Green */
+    --warning: #F59E0B;      /* Amber */
+    --danger: #EF4444;       /* Rose/Red */
+    --bg-light: #F8FAFC;     /* Crisp slate white */
+    --text-muted: #64748B;
+    --border-color: #E2E8F0;
+    --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.1);
     --radius: 2px;
 }
 
 /* ---------- Global ---------- */
 body {
     background-color: var(--bg-light);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
     min-height: 100vh;
-    color: #333;
+    color: #1E293B;
 }
 
-a { color: var(--accent); }
-a:hover { color: var(--primary); }
+a { color: var(--primary); }
+a:hover { color: var(--primary-light); }
 
 /* ---------- Navbar ---------- */
-.navbar { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); }
+.navbar { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border-bottom: 2px solid var(--accent); }
 .navbar-brand { font-size: 1.3rem; letter-spacing: .3px; }
 
 /* ---------- Page Header ---------- */
-.page-header {
+.page-header, .page-header-bg {
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    /* Uncomment below to add a photo background later */
+    /* background: linear-gradient(135deg, rgba(79, 70, 229, 0.85) 0%, rgba(14, 165, 233, 0.85) 100%), url('YOUR_IMAGE.jpg') center/cover; */
     color: #fff;
-    padding: 2rem 0;
+    padding: 2.5rem 2rem;
     margin-bottom: 2rem;
 }
-.page-header h1 { font-weight: 700; margin-bottom: .35rem; }
-.page-header p  { opacity: .85; margin-bottom: 0; }
+.page-header h1, .page-header-bg h1 { font-weight: 800; margin-bottom: .35rem; letter-spacing: -0.5px; }
+.page-header p, .page-header-bg p  { opacity: .9; margin-bottom: 0; font-size: 1.1rem; }
 
 /* ---------- Cards ---------- */
 .card {
@@ -189,11 +192,6 @@ a:hover { color: var(--primary); }
     padding: .4rem 1.2rem;
     font-weight: 500;
 }
-.view-toggle .btn.active {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: #fff;
-}
 
 /* ---------- Filter Bar ---------- */
 .filter-bar {
@@ -207,7 +205,7 @@ a:hover { color: var(--primary); }
     display: inline-flex;
     align-items: center;
     padding: 4px 14px;
-    border-radius: 2px;
+    border-radius: 0px; /* Completely square tags */
     font-size: .8rem;
     font-weight: 600;
     cursor: pointer;
