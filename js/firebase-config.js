@@ -118,5 +118,5 @@ function timesOverlap(startA, endA, startB, endB) {
 }
 
 // ImgBB API Key for free image hosting
-const IMGBB_API_KEY = 'YOUR_IMGBB_API_KEY';
+const IMGBB_API_KEY = 'c3de3091355ab88c1926930101f81516';
 
