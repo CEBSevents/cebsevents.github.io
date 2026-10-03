@@ -300,5 +300,23 @@ function showEventDetails(ev) {
     aud.textContent = open ? 'Open to all' : 'Club members only';
     aud.className = 'tag ' + (open ? 'tag-open' : 'tag-members');
 
+    const descContainer = document.getElementById('modalDescriptionContainer');
+    const descEl = document.getElementById('modalDescription');
+    if (ev.eventDescription) {
+        descEl.textContent = ev.eventDescription;
+        descContainer.classList.remove('d-none');
+    } else {
+        descContainer.classList.add('d-none');
+    }
+
+    const posterEl = document.getElementById('modalPoster');
+    if (ev.posterUrl) {
+        posterEl.src = ev.posterUrl;
+        posterEl.classList.remove('d-none');
+    } else {
+        posterEl.src = "";
+        posterEl.classList.add('d-none');
+    }
+
     eventModal.show();
 }

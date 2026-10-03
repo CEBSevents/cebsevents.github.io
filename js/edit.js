@@ -145,6 +145,15 @@ function populateForm(data) {
     document.getElementById('clubName').value = data.clubName;
     document.getElementById('eventName').value = data.eventName;
     
+    if (data.eventDescription) {
+        const descInput = document.getElementById('eventDescription');
+        if (descInput) descInput.value = data.eventDescription;
+    }
+    if (data.posterUrl) {
+        const posterInput = document.getElementById('posterUrl');
+        if (posterInput) posterInput.value = data.posterUrl;
+    }
+    
     if (data.audience === 'everyone') {
         document.getElementById('audience-everyone').checked = true;
     } else {
@@ -239,6 +248,8 @@ async function saveEvent(clashAcknowledged) {
         
         const updates = {
             eventName: document.getElementById('eventName').value.trim(),
+            eventDescription: document.getElementById('eventDescription') ? document.getElementById('eventDescription').value.trim() : null,
+            posterUrl: document.getElementById('posterUrl') ? document.getElementById('posterUrl').value.trim() : null,
             audience: document.querySelector('input[name="audience"]:checked').value,
             date: document.getElementById('eventDate').value,
             startTime: document.getElementById('startTime').value,

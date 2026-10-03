@@ -149,9 +149,14 @@ async function handleFormSubmit(e) {
         }
     }
 
+    const eventDescription = document.getElementById('eventDescription') ? document.getElementById('eventDescription').value.trim() : null;
+    const posterUrl = document.getElementById('posterUrl') ? document.getElementById('posterUrl').value.trim() : null;
+
     currentEventData = {
         clubName,
         eventName,
+        eventDescription,
+        posterUrl,
         date,
         startTime: start,
         endTime: end,
