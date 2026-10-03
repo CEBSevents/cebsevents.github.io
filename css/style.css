@@ -422,28 +422,34 @@ a:hover { color: var(--brick); }
 }
 .hero-link:hover { color: var(--marigold); border-color: var(--marigold); }
 
-/* "Next up" — a notice taped onto the photo */
+/* "Next up" — a notice pinned to the photo */
 .next-up {
     position: relative;
     max-width: 420px;
     margin-left: auto;
-    padding: 1.65rem 1.5rem 1.3rem;
-    background: var(--card);
+    padding: 2.2rem 1.5rem 1.3rem 2.8rem;
+    background-color: #fffdf5;
+    background-image: 
+        linear-gradient(90deg, transparent 2.2rem, rgba(220, 53, 69, 0.3) 2.2rem, rgba(220, 53, 69, 0.3) 2.3rem, transparent 2.3rem),
+        linear-gradient(transparent 2.2rem, rgba(13, 110, 253, 0.15) 2.2rem, rgba(13, 110, 253, 0.15) 2.3rem, transparent 2.3rem);
+    background-size: 100% 100%, 100% 1.4rem;
     color: var(--ink);
-    border: 1.5px solid var(--ink);
-    box-shadow: 7px 7px 0 rgba(10, 8, 25, .55);
-    transform: rotate(1.2deg);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px 8px 8px 2px;
+    box-shadow: 4px 6px 16px rgba(10, 8, 25, 0.4);
+    transform: rotate(-1.2deg);
 }
 .next-up::before {
     content: '';
     position: absolute;
-    top: -13px;
+    top: 12px;
     left: 50%;
-    width: 98px;
-    height: 26px;
-    transform: translateX(-50%) rotate(-3deg);
-    background: rgba(242, 169, 59, .82);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+    width: 16px;
+    height: 16px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle at 35% 35%, #ff6b6b, #c92a2a);
+    border-radius: 50%;
+    box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.5), inset -2px -2px 4px rgba(0,0,0,0.2);
 }
 .next-up-label {
     display: block;
