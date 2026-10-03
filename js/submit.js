@@ -259,11 +259,23 @@ async function submitEvent(clashAcknowledged) {
         
         let uploadedPosterUrl = null;
         if (currentEventData.posterFile) {
-            const ext = currentEventData.posterFile.name.split('.').pop();
-            const fileName = `posters/${generateUUID()}.${ext}`;
-            const storageRef = firebase.storage().ref().child(fileName);
-            const snapshot = await storageRef.put(currentEventData.posterFile);
-            uploadedPosterUrl = await snapshot.ref.getDownloadURL();
+            if (!IMGBB_API_KEY || IMGBB_API_KEY === 'YOUR_IMGBB_API_KEY') {
+                throw new Error("ImgBB API key is missing. Please configure it in firebase-config.js");
+            }
+            const formData = new FormData();
+            formData.append('image', currentEventData.posterFile);
+            
+            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                uploadedPosterUrl = data.data.url;
+            } else {
+                throw new Error("Image upload failed: " + (data.error ? data.error.message : "Unknown error"));
+            }
         }
 
         const docData = {

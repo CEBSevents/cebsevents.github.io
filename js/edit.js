@@ -279,11 +279,24 @@ async function saveEvent(clashAcknowledged) {
                 if (file.size > 5 * 1024 * 1024) {
                     throw new Error('Poster image must be less than 5MB.');
                 }
-                const ext = file.name.split('.').pop();
-                const fileName = `posters/${generateUUID()}.${ext}`;
-                const storageRef = firebase.storage().ref().child(fileName);
-                const snapshot = await storageRef.put(file);
-                updates.posterUrl = await snapshot.ref.getDownloadURL();
+                
+                if (!IMGBB_API_KEY || IMGBB_API_KEY === 'YOUR_IMGBB_API_KEY') {
+                    throw new Error("ImgBB API key is missing. Please configure it in firebase-config.js");
+                }
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    updates.posterUrl = data.data.url;
+                } else {
+                    throw new Error("Image upload failed: " + (data.error ? data.error.message : "Unknown error"));
+                }
             } else {
                 updates.posterUrl = document.getElementById('existingPosterUrl').value || null;
             }

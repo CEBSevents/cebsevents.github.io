@@ -16,7 +16,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
-const storage = firebase.storage();
+
 
 // ============================================================
 // Shared Constants
@@ -116,3 +116,7 @@ function getVenueDisplay(venue, venueDetails) {
 function timesOverlap(startA, endA, startB, endB) {
     return startA < endB && startB < endA;
 }
+
+// ImgBB API Key for free image hosting
+const IMGBB_API_KEY = 'YOUR_IMGBB_API_KEY';
+
