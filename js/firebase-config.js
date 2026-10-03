@@ -22,18 +22,18 @@ const auth = firebase.auth();
 // ============================================================
 
 const CLUBS = [
-    { name: 'Dance', color: '#E74C3C', textColor: '#fff' },
-    { name: 'Theatre', color: '#9B59B6', textColor: '#fff' },
-    { name: 'Music', color: '#3498DB', textColor: '#fff' },
-    { name: 'Cinematography', color: '#1ABC9C', textColor: '#fff' },
-    { name: 'Science', color: '#F39C12', textColor: '#fff' },
-    { name: 'Math', color: '#E67E22', textColor: '#fff' },
-    { name: 'Art', color: '#2ECC71', textColor: '#fff' },
-    { name: 'Literature', color: '#8E44AD', textColor: '#fff' },
-    { name: 'E-Game', color: '#16A085', textColor: '#fff' },
-    { name: 'Cultural', color: '#D35400', textColor: '#fff' },
-    { name: 'E-Cell', color: '#2980B9', textColor: '#fff' },
-    { name: 'Alumni Cell', color: '#27AE60', textColor: '#fff' }
+    { name: 'Dance', color: '#E11D48', textColor: '#fff' },
+    { name: 'Theatre', color: '#7C3AED', textColor: '#fff' },
+    { name: 'Music', color: '#2563EB', textColor: '#fff' },
+    { name: 'Cinematography', color: '#0D9488', textColor: '#fff' },
+    { name: 'Science', color: '#EA580C', textColor: '#fff' },
+    { name: 'Math', color: '#475569', textColor: '#fff' },
+    { name: 'Art', color: '#059669', textColor: '#fff' },
+    { name: 'Literature', color: '#9333EA', textColor: '#fff' },
+    { name: 'E-Game', color: '#4F46E5', textColor: '#fff' },
+    { name: 'Cultural', color: '#D97706', textColor: '#fff' },
+    { name: 'E-Cell', color: '#0284C7', textColor: '#fff' },
+    { name: 'Alumni Cell', color: '#16A34A', textColor: '#fff' }
 ];
 
 const VENUES = [
