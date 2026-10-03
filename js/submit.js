@@ -150,13 +150,23 @@ async function handleFormSubmit(e) {
     }
 
     const eventDescription = document.getElementById('eventDescription') ? document.getElementById('eventDescription').value.trim() : null;
-    const posterUrl = document.getElementById('posterUrl') ? document.getElementById('posterUrl').value.trim() : null;
+    
+    // We will save the file object in currentEventData and upload it in submitEvent
+    const posterInput = document.getElementById('posterFile');
+    let posterFile = null;
+    if (posterInput && posterInput.files && posterInput.files.length > 0) {
+        posterFile = posterInput.files[0];
+        if (posterFile.size > 5 * 1024 * 1024) {
+            showError('Poster image must be less than 5MB.');
+            return;
+        }
+    }
 
     currentEventData = {
         clubName,
         eventName,
         eventDescription,
-        posterUrl,
+        posterFile,
         date,
         startTime: start,
         endTime: end,
@@ -247,6 +257,15 @@ async function submitEvent(clashAcknowledged) {
         const user = getCurrentUser();
         const editToken = generateUUID();
         
+        let uploadedPosterUrl = null;
+        if (currentEventData.posterFile) {
+            const ext = currentEventData.posterFile.name.split('.').pop();
+            const fileName = `posters/${generateUUID()}.${ext}`;
+            const storageRef = firebase.storage().ref().child(fileName);
+            const snapshot = await storageRef.put(currentEventData.posterFile);
+            uploadedPosterUrl = await snapshot.ref.getDownloadURL();
+        }
+
         const docData = {
             ...currentEventData,
             editToken,
@@ -256,6 +275,8 @@ async function submitEvent(clashAcknowledged) {
             clashAcknowledged
         };
         
+        docData.posterUrl = uploadedPosterUrl;
+        delete docData.posterFile;
         delete docData.turnstileToken; // Don't save token to DB
         
         await db.collection('events').add(docData);

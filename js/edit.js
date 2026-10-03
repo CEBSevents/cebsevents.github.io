@@ -53,6 +53,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('btn-confirm-delete').addEventListener('click', deleteEvent);
+
+    const btnRemovePoster = document.getElementById('btn-remove-poster');
+    if (btnRemovePoster) {
+        btnRemovePoster.addEventListener('click', () => {
+            document.getElementById('currentPosterContainer').classList.remove('d-flex');
+            document.getElementById('currentPosterContainer').classList.add('d-none');
+            document.getElementById('removePosterFlag').value = 'true';
+        });
+    }
 });
 
 function showError(msg) {
@@ -150,8 +159,10 @@ function populateForm(data) {
         if (descInput) descInput.value = data.eventDescription;
     }
     if (data.posterUrl) {
-        const posterInput = document.getElementById('posterUrl');
-        if (posterInput) posterInput.value = data.posterUrl;
+        document.getElementById('existingPosterUrl').value = data.posterUrl;
+        document.getElementById('currentPosterPreview').src = data.posterUrl;
+        document.getElementById('currentPosterContainer').classList.remove('d-none');
+        document.getElementById('currentPosterContainer').classList.add('d-flex');
     }
     
     if (data.audience === 'everyone') {
@@ -249,7 +260,6 @@ async function saveEvent(clashAcknowledged) {
         const updates = {
             eventName: document.getElementById('eventName').value.trim(),
             eventDescription: document.getElementById('eventDescription') ? document.getElementById('eventDescription').value.trim() : null,
-            posterUrl: document.getElementById('posterUrl') ? document.getElementById('posterUrl').value.trim() : null,
             audience: document.querySelector('input[name="audience"]:checked').value,
             date: document.getElementById('eventDate').value,
             startTime: document.getElementById('startTime').value,
@@ -258,6 +268,26 @@ async function saveEvent(clashAcknowledged) {
             venueDetails: detailsInput ? detailsInput.value.trim() : null,
             clashAcknowledged: clashAcknowledged || currentEventData.clashAcknowledged || false
         };
+
+        const removeFlag = document.getElementById('removePosterFlag').value === 'true';
+        if (removeFlag) {
+            updates.posterUrl = null;
+        } else {
+            const posterInput = document.getElementById('posterFile');
+            if (posterInput && posterInput.files && posterInput.files.length > 0) {
+                const file = posterInput.files[0];
+                if (file.size > 5 * 1024 * 1024) {
+                    throw new Error('Poster image must be less than 5MB.');
+                }
+                const ext = file.name.split('.').pop();
+                const fileName = `posters/${generateUUID()}.${ext}`;
+                const storageRef = firebase.storage().ref().child(fileName);
+                const snapshot = await storageRef.put(file);
+                updates.posterUrl = await snapshot.ref.getDownloadURL();
+            } else {
+                updates.posterUrl = document.getElementById('existingPosterUrl').value || null;
+            }
+        }
 
         await db.collection('events').doc(currentEventId).update(updates);
         showSuccess("Event updated successfully!");
