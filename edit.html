@@ -4,198 +4,233 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Event - CEBS Event Calendar</title>
+    <meta name="theme-color" content="#F5EFE3">
+    <link rel="icon" type="image/png" href="img/cebs-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <style>
-        .form-container {
-            max-width: 800px;
-            margin: 3rem auto;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 2rem;
-        }
-        .form-section {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid #3498DB;
-        }
-    </style>
 </head>
-<body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2C3E50;">
-        <div class="container">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
-                <img src="https://www.cbs.ac.in/assets/site_content/cbs24/240824_1632.png" alt="CEBS Logo" height="36" class="me-2 bg-white p-1" style="border-radius: 2px;">
-                CEBS Event Calendar
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-calendar3"></i> Calendar</a></li>
-                    <li class="nav-item"><a class="nav-link" href="submit.html"><i class="bi bi-plus-circle"></i> Submit Event</a></li>
-                </ul>
-                <div id="auth-nav"></div>
-            </div>
-        </div>
-    </nav>
+<body>
 
+<nav class="navbar navbar-expand-lg site-nav">
     <div class="container">
-        <!-- Error State -->
-        <div id="error-container" class="form-container text-center d-none">
-            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
-            <h2 class="mt-3">Access Denied</h2>
-            <p class="lead" id="error-message">Invalid or expired edit link.</p>
-            <a href="index.html" class="btn btn-primary mt-3"><i class="bi bi-house"></i> Return to Calendar</a>
+        <a class="navbar-brand brand" href="index.html">
+            <img src="img/cebs-logo.png" alt="CEBS logo" class="brand-logo">
+            <span class="brand-text">
+                <span class="brand-name">CEBS Event Calendar</span>
+                <span class="brand-sub">UM-DAE CEBS &middot; Club events</span>
+            </span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html">Calendar</a></li>
+                <li class="nav-item"><a class="nav-link" href="submit.html">Submit an event</a></li>
+            </ul>
+            <div id="auth-nav"></div>
         </div>
+    </div>
+</nav>
 
-        <!-- Success State -->
-        <div id="success-container" class="form-container text-center d-none">
-            <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
-            <h2 class="mt-3">Success</h2>
-            <p class="lead" id="success-message">Event updated successfully!</p>
-            <a href="index.html" class="btn btn-primary mt-3"><i class="bi bi-calendar3"></i> View Calendar</a>
-        </div>
+<header class="page-banner">
+    <div class="garland-host" data-garland></div>
+    <div class="container page-banner-inner">
+        <h1>Edit <em>Event</em></h1>
+        <p>Modify event details or cancel it.</p>
+    </div>
+</header>
 
-        <!-- Edit Form -->
-        <div id="form-container" class="form-container d-none">
-            <div class="text-center mb-4">
-                <h2>Edit Event</h2>
-                <p class="text-muted">Modify the event details below</p>
-            </div>
-
-            <form id="edit-event-form">
-                <div class="form-section">
-                    <h5 class="mb-3"><i class="bi bi-info-circle"></i> Basic Information</h5>
-                    <div class="mb-3">
-                        <label for="clubName" class="form-label">Club / Committee</label>
-                        <select class="form-select" id="clubName" required disabled>
-                            <!-- Options populated via JS -->
-                        </select>
-                        <div class="form-text">Club cannot be changed.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="eventName" class="form-label">Event Name</label>
-                        <input type="text" class="form-control" id="eventName" required placeholder="E.g., General Body Meeting">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label d-block">Target Audience</label>
-                        <div class="btn-group" role="group" style="width: 100%;">
-                            <input type="radio" class="btn-check" name="audience" id="audience-everyone" value="everyone" required>
-                            <label class="btn btn-outline-primary" for="audience-everyone">Open to Everyone</label>
-
-                            <input type="radio" class="btn-check" name="audience" id="audience-members" value="members">
-                            <label class="btn btn-outline-primary" for="audience-members">Club Members Only</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h5 class="mb-3"><i class="bi bi-clock"></i> Date & Time</h5>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="eventDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="eventDate" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="startTime" class="form-label">Start Time</label>
-                            <input type="time" class="form-control" id="startTime" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="endTime" class="form-label">End Time</label>
-                            <input type="time" class="form-control" id="endTime" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h5 class="mb-3"><i class="bi bi-geo-alt"></i> Location</h5>
-                    <div class="mb-3">
-                        <label for="venue" class="form-label">Venue</label>
-                        <select class="form-select" id="venue" required>
-                            <option value="" disabled selected>Select Venue...</option>
-                            <!-- Populated dynamically -->
-                        </select>
-                    </div>
-                    <div class="mb-3 d-none" id="venue-details-container">
-                        <label for="venueDetails" class="form-label" id="venue-details-label">Additional Details</label>
-                        <div id="venue-details-input-container">
-                            <!-- Input/Select injected dynamically -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-between mt-4">
-                    <button type="button" class="btn btn-outline-danger" id="btn-delete-event">
-                        <i class="bi bi-trash"></i> Delete Event
-                    </button>
-                    <button type="submit" class="btn btn-primary px-4" id="btn-save-event">
-                        <i class="bi bi-save"></i> Save Changes
-                    </button>
-                </div>
-            </form>
+<main class="container sheet-container">
+    
+    <!-- Error State -->
+    <div id="error-container" class="sheet text-center d-none border-danger">
+        <h2 class="mb-3 text-danger"><i class="bi bi-exclamation-triangle"></i> Access Denied</h2>
+        <p class="text-muted" id="error-message">Invalid or expired edit link.</p>
+        <div class="mt-4">
+            <a href="index.html" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Return to Board</a>
         </div>
     </div>
 
-    <!-- Clash Warning Modal -->
-    <div class="modal fade" id="clashModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content border-warning">
-                <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Scheduling Conflict Detected</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>The following events are already scheduled at <strong><span id="clash-venue-name"></span></strong> during your requested time:</p>
-                    <ul id="clash-list" class="list-group mb-3">
-                        <!-- Clashes go here -->
-                    </ul>
-                    <p class="mb-0">Are you sure you want to proceed and double-book this venue?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
-                    <button type="button" class="btn btn-warning" id="btn-force-save">Save Anyway</button>
-                </div>
-            </div>
+    <!-- Success State -->
+    <div id="success-container" class="sheet notice-success d-none border-success">
+        <div class="stamp mb-4">Success</div>
+        <h2 class="mb-3" id="success-message">Event updated successfully!</h2>
+        <div class="mt-4">
+            <a href="index.html" class="btn btn-marigold">View Board <i class="bi bi-arrow-right"></i></a>
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Confirm Deletion</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Edit Form -->
+    <div id="form-container" class="sheet d-none">
+        <h2 class="sheet-section-title">Event Details</h2>
+        <form id="edit-event-form">
+            
+            <div class="field">
+                <div class="field-num">01</div>
+                <div class="field-body">
+                    <label for="clubName" class="form-label">Organising Club</label>
+                    <select id="clubName" class="form-select" required disabled>
+                        <option value="" disabled selected>Select Club</option>
+                    </select>
+                    <div class="form-text">Club cannot be changed once created.</div>
                 </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this event? This action cannot be undone.
+            </div>
+            
+            <div class="field">
+                <div class="field-num">02</div>
+                <div class="field-body">
+                    <label for="eventName" class="form-label">Name of Event <span class="req">*</span></label>
+                    <input type="text" id="eventName" class="form-control" required placeholder="E.g., General Body Meeting">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete</button>
+            </div>
+            
+            <div class="field">
+                <div class="field-num">03</div>
+                <div class="field-body">
+                    <label for="eventDate" class="form-label">Date of Event <span class="req">*</span></label>
+                    <input type="date" id="eventDate" class="form-control" required>
                 </div>
+            </div>
+            
+            <div class="field">
+                <div class="field-num">04</div>
+                <div class="field-body">
+                    <label class="form-label">Time <span class="req">*</span></label>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text">From</span>
+                                <input type="time" id="startTime" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text">To</span>
+                                <input type="time" id="endTime" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="field-num">05</div>
+                <div class="field-body">
+                    <label class="form-label">Audience <span class="req">*</span></label>
+                    <div class="choice-group">
+                        <div>
+                            <input class="btn-check" type="radio" name="audience" id="audience-everyone" value="everyone" required>
+                            <label for="audience-everyone">
+                                <span>Open to Everyone</span>
+                                <small>Any student can attend</small>
+                            </label>
+                        </div>
+                        <div>
+                            <input class="btn-check" type="radio" name="audience" id="audience-members" value="members" required>
+                            <label for="audience-members">
+                                <span>Members Only</span>
+                                <small>Restricted to club members</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field border-bottom-0">
+                <div class="field-num">06</div>
+                <div class="field-body">
+                    <label for="venue" class="form-label">Venue <span class="req">*</span></label>
+                    <select id="venue" class="form-select" required>
+                        <option value="" disabled selected>Select Venue...</option>
+                    </select>
+                    
+                    <div id="venue-details-container" class="mt-3 d-none">
+                        <label id="venue-details-label" for="venueDetails" class="form-label">Additional Details</label>
+                        <div id="venue-details-input-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sheet-actions">
+                <button type="button" class="btn btn-outline-danger" id="btn-delete-event">
+                    Delete Event
+                </button>
+                <button type="submit" class="btn btn-primary px-4 py-2" id="btn-save-event">
+                    Save Changes <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</main>
+
+<!-- Clash Warning Modal -->
+<div class="modal fade" id="clashModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content event-modal border-warning">
+            <div class="modal-header bg-warning">
+                <div>
+                    <span class="modal-kicker text-dark">Scheduling Conflict</span>
+                    <h5 class="modal-title text-dark">Venue Already Booked</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>The following events are already scheduled at <strong><span id="clash-venue-name"></span></strong> during your requested time:</p>
+                <ul id="clash-list" class="list-group mb-4">
+                    <!-- Clashes go here -->
+                </ul>
+                <p class="mb-0 fw-bold">Are you sure you want to proceed and double-book this venue?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
+                <button type="button" class="btn btn-warning" id="btn-force-save">Save Anyway</button>
             </div>
         </div>
     </div>
+</div>
 
-    <footer class="mt-auto py-3 bg-light text-center">
-        <div class="container">
-            <p class="text-muted mb-0">&copy; 2026 CEBS Event Calendar</p>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content event-modal">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-kicker text-danger">Danger Zone</span>
+                    <h5 class="modal-title">Delete Event</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this event? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete</button>
+            </div>
         </div>
-    </footer>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/edit.js"></script>
+<footer class="site-footer">
+    <div class="container">
+        <div>&copy; 2026 CEBS Event Calendar</div>
+        <div class="mono">Developed for UM-DAE CEBS</div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/edit.js"></script>
 </body>
 </html>

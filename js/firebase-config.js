@@ -21,19 +21,21 @@ const auth = firebase.auth();
 // Shared Constants
 // ============================================================
 
+// Club colours: one family of muted "screen-print" inks with similar
+// depth, so they read as a set on the cream paper and all carry white text.
 const CLUBS = [
-    { name: 'Dance', color: '#E11D48', textColor: '#fff' },
-    { name: 'Theatre', color: '#7C3AED', textColor: '#fff' },
-    { name: 'Music', color: '#2563EB', textColor: '#fff' },
-    { name: 'Cinematography', color: '#0D9488', textColor: '#fff' },
-    { name: 'Science', color: '#EA580C', textColor: '#fff' },
-    { name: 'Math', color: '#475569', textColor: '#fff' },
-    { name: 'Art', color: '#059669', textColor: '#fff' },
-    { name: 'Literature', color: '#9333EA', textColor: '#fff' },
-    { name: 'E-Game', color: '#4F46E5', textColor: '#fff' },
-    { name: 'Cultural', color: '#D97706', textColor: '#fff' },
-    { name: 'E-Cell', color: '#0284C7', textColor: '#fff' },
-    { name: 'Alumni Cell', color: '#16A34A', textColor: '#fff' }
+    { name: 'Dance',          color: '#C4513A', textColor: '#fff' }, // terracotta
+    { name: 'Theatre',        color: '#7A3B69', textColor: '#fff' }, // plum
+    { name: 'Music',          color: '#2F5D8A', textColor: '#fff' }, // denim
+    { name: 'Cinematography', color: '#2A6B5C', textColor: '#fff' }, // bottle green
+    { name: 'Science',        color: '#B06A12', textColor: '#fff' }, // ochre
+    { name: 'Math',           color: '#4D5566', textColor: '#fff' }, // graphite
+    { name: 'Art',            color: '#5E7A2C', textColor: '#fff' }, // moss
+    { name: 'Literature',     color: '#86603A', textColor: '#fff' }, // old-book tan
+    { name: 'E-Game',         color: '#5B3FA0', textColor: '#fff' }, // violet
+    { name: 'Cultural',       color: '#B23A55', textColor: '#fff' }, // rose
+    { name: 'E-Cell',         color: '#1F6F86', textColor: '#fff' }, // petrol
+    { name: 'Alumni Cell',    color: '#2B2A7A', textColor: '#fff' }  // CEBS indigo
 ];
 
 const VENUES = [
@@ -61,7 +63,7 @@ const TURNSTILE_SITE_KEY = 'YOUR_TURNSTILE_SITE_KEY';
 
 function getClubColor(clubName) {
     const club = CLUBS.find(c => c.name === clubName);
-    return club ? club.color : '#95A5A6';
+    return club ? club.color : '#1E1B3A';
 }
 
 function getClubTextColor(clubName) {

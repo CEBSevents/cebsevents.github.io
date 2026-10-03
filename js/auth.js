@@ -149,6 +149,12 @@
     // Navbar Update
     // ============================================================
 
+    function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
     function updateNavbar() {
         var authNav = document.getElementById('auth-nav');
         if (!authNav) return;
@@ -156,27 +162,27 @@
         if (currentUser && currentUserData) {
             var adminBtn = '';
             if (currentUserData.role === 'admin') {
-                adminBtn = ' <a href="admin.html" class="btn btn-outline-light btn-sm"><i class="bi bi-gear"></i> Admin</a>';
+                adminBtn = '<a href="admin.html" class="btn btn-ink-outline btn-sm"><i class="bi bi-sliders"></i> Admin</a>';
             }
             authNav.innerHTML =
-                '<div class="d-flex align-items-center gap-2 flex-wrap">' +
-                '  <span class="badge bg-light text-dark">' +
-                '    <i class="bi bi-person-fill"></i> ' + (currentUserData.name || currentUser.email) +
-                '    <span class="badge ms-1" style="background-color:' + getClubColor(currentUserData.clubName) + '">' + currentUserData.clubName + '</span>' +
+                '<div class="auth-nav-inner">' +
+                '  <span class="user-chip">' +
+                '    <span>' + esc(currentUserData.name || currentUser.email) + '</span>' +
+                '    <span class="club-swatch" style="background-color:' + getClubColor(currentUserData.clubName) + '">' + esc(currentUserData.clubName) + '</span>' +
                 '  </span>' +
                 adminBtn +
-                '  <button class="btn btn-outline-light btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button>' +
+                '  <button class="btn btn-ink-outline btn-sm" onclick="logout()">Log out</button>' +
                 '</div>';
         } else if (currentUser) {
             authNav.innerHTML =
-                '<div class="d-flex align-items-center gap-2">' +
-                '  <span class="text-light small">' + currentUser.email + '</span>' +
-                '  <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>' +
+                '<div class="auth-nav-inner">' +
+                '  <span class="small text-muted">' + esc(currentUser.email) + '</span>' +
+                '  <button class="btn btn-ink-outline btn-sm" onclick="logout()">Log out</button>' +
                 '</div>';
         } else {
             authNav.innerHTML =
-                '<a href="login.html" class="btn btn-outline-light btn-sm">' +
-                '  <i class="bi bi-box-arrow-in-right"></i> Login' +
+                '<a href="login.html" class="btn btn-ink-outline btn-sm">' +
+                '  Club login <i class="bi bi-arrow-right"></i>' +
                 '</a>';
         }
     }

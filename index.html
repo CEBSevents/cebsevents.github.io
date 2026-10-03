@@ -4,178 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CEBS Event Calendar</title>
+    <meta name="description" content="All CEBS Club events in one place — the shared event calendar for clubs at UM-DAE Centre for Excellence in Basic Sciences.">
+    <meta name="theme-color" content="#F5EFE3">
+    <link rel="icon" type="image/png" href="img/cebs-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400..700&family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <style>
-        .filter-chip {
-            cursor: pointer;
-            border-radius: 20px;
-            padding: 5px 15px;
-            margin: 5px;
-            display: inline-block;
-            opacity: 0.5;
-            transition: opacity 0.2s;
-            border: 1px solid #ccc;
-            user-select: none;
-        }
-        .filter-chip.active {
-            opacity: 1;
-            border-color: transparent;
-        }
-        .event-card {
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .event-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1) !important;
-        }
-        #calendar-container {
-            min-height: 600px;
-        }
-        /* Fix FullCalendar link color conflicts */
-        .fc-event {
-            cursor: pointer;
-        }
-    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2C3E50;">
+<nav class="navbar navbar-expand-lg site-nav">
     <div class="container">
-        <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
-            <img src="https://www.cbs.ac.in/assets/site_content/cbs24/240824_1632.png" alt="CEBS Logo" height="36" class="me-2 bg-white p-1" style="border-radius: 2px;">
-            CEBS Event Calendar
+        <a class="navbar-brand brand" href="index.html">
+            <img src="img/cebs-logo.png" alt="CEBS logo" class="brand-logo">
+            <span class="brand-text">
+                <span class="brand-name">CEBS Event Calendar</span>
+                <span class="brand-sub">UM-DAE CEBS &middot; Club events</span>
+            </span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link active" href="index.html"><i class="bi bi-calendar3"></i> Calendar</a></li>
-                <li class="nav-item"><a class="nav-link" href="submit.html"><i class="bi bi-plus-circle"></i> Submit Event</a></li>
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html">Calendar</a></li>
+                <li class="nav-item"><a class="nav-link" href="submit.html">Submit an event</a></li>
             </ul>
             <div id="auth-nav"></div>
         </div>
     </div>
 </nav>
 
-<div class="container my-4">
-    <!-- Page Header -->
-    <div class="p-4 text-white rounded mb-4 shadow-sm page-header-bg">
-        <h1 class="display-5 fw-bold">CEBS Event Calendar</h1>
-        <p class="lead mb-0">All CEBS Club events in one place</p>
-    </div>
-
-    <!-- Controls -->
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-        <div class="view-toggle btn-group shadow-sm">
-            <button id="btn-calendar-view" class="btn btn-primary">
-                <i class="bi bi-calendar-month"></i> Calendar View
-            </button>
-            <button id="btn-list-view" class="btn btn-outline-primary bg-white">
-                <i class="bi bi-list-ul"></i> List View
-            </button>
-        </div>
-    </div>
-
-    <!-- Filter Bar -->
-    <div class="card mb-4 border-0 shadow-sm">
-        <div class="card-body">
-            <h6 class="card-subtitle mb-3 text-muted fw-bold">Filter by Club</h6>
-            <div id="filter-bar" class="d-flex flex-wrap">
-                <!-- Chips dynamically injected -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Calendar View -->
-    <div id="calendar-view">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div id="calendar-container">
-                    <div id="calendar"></div>
+<header class="hero">
+    <div class="garland-host" data-garland></div>
+    <div class="container hero-inner">
+        <div class="row align-items-end g-4 g-lg-5">
+            <div class="col-lg-7">
+                <span class="hero-kicker">UM-DAE Centre for Excellence in Basic Sciences</span>
+                <h1 class="hero-title">CEBS Event <em>Calendar</em></h1>
+                <p class="hero-sub">All CEBS Club events in one place</p>
+                <div class="hero-actions">
+                    <a href="#board" class="btn btn-marigold">See what's on <i class="bi bi-arrow-down-short"></i></a>
+                    <a href="submit.html" class="hero-link">Club in-charge? Add an event &rarr;</a>
                 </div>
             </div>
+            <div class="col-lg-5">
+                <aside id="next-up" class="next-up" aria-live="polite">
+                    <span class="next-up-label">Next up</span>
+                    <div class="next-up-body">
+                        <p class="next-up-empty">Checking the board&hellip;</p>
+                    </div>
+                </aside>
+            </div>
         </div>
     </div>
+</header>
 
-    <!-- List View -->
-    <div id="list-view" class="d-none">
-        <h4 class="mb-3 fw-bold text-dark"><i class="bi bi-arrow-up-right-circle text-primary"></i> Upcoming Events</h4>
-        <div id="upcoming-events" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
-            <!-- Upcoming cards injected here -->
+<main>
+    <section id="board" class="board container">
+        <div class="board-head">
+            <div>
+                <span class="kicker">The notice board</span>
+                <h2 class="board-title">What's happening</h2>
+            </div>
+            <div class="view-toggle" role="group" aria-label="Choose a view">
+                <button type="button" id="btn-calendar-view" class="seg is-active" aria-pressed="true">
+                    <i class="bi bi-grid-3x3"></i> Calendar
+                </button>
+                <button type="button" id="btn-list-view" class="seg" aria-pressed="false">
+                    <i class="bi bi-ticket-perforated"></i> List
+                </button>
+            </div>
         </div>
 
-        <h4 class="mb-3 fw-bold text-muted"><i class="bi bi-clock-history"></i> Past Events</h4>
-        <div id="past-events" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 opacity-75">
-            <!-- Past cards injected here -->
+        <div class="filter-block">
+            <span class="filter-label">Filter by club</span>
+            <div id="filter-bar" class="filter-bar">
+                <!-- Chips injected by calendar.js -->
+            </div>
         </div>
-    </div>
-</div>
 
-<footer class="bg-dark text-white text-center py-4 mt-5">
+        <!-- Calendar View -->
+        <div id="calendar-view">
+            <div id="calendar-container" class="paper-panel">
+                <div id="calendar"></div>
+            </div>
+        </div>
+
+        <!-- List View -->
+        <div id="list-view" class="d-none">
+            <div class="list-section-head">
+                <h3>Coming up</h3>
+                <span id="upcoming-count" class="count"></span>
+            </div>
+            <div id="upcoming-events" class="ticket-grid">
+                <!-- Upcoming tickets injected here -->
+            </div>
+
+            <details class="past-block">
+                <summary>Past events <span id="past-count" class="count"></span></summary>
+                <div id="past-events" class="ticket-grid is-past">
+                    <!-- Past tickets injected here -->
+                </div>
+            </details>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
     <div class="container">
-        <p class="mb-0 text-white-50">&copy; 2026 CEBS Event Calendar</p>
+        <span>&copy; 2026 CEBS Event Calendar</span>
+        <span class="mono">UM-DAE Centre for Excellence in Basic Sciences</span>
     </div>
 </footer>
 
 <!-- Event Details Modal -->
-<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header border-0 text-white" id="modalHeader">
-        <h5 class="modal-title fw-bold" id="modalTitle">Event Title</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body p-4">
-        <div class="d-flex align-items-center mb-3">
-            <div class="fs-4 me-3 text-primary"><i class="bi bi-diagram-3-fill"></i></div>
-            <div>
-                <small class="text-muted d-block">Organizing Club</small>
-                <strong id="modalClub" class="fs-5"></strong>
+<div class="modal fade event-modal" id="eventModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-white" id="modalHeader">
+                <div>
+                    <span class="modal-kicker">Event</span>
+                    <h5 class="modal-title" id="modalTitle">Event Title</h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <dl class="detail-grid">
+                    <div><dt>Organising club</dt><dd id="modalClub"></dd></div>
+                    <div><dt>Audience</dt><dd><span id="modalAudience" class="tag"></span></dd></div>
+                    <div><dt>Date</dt><dd id="modalDate"></dd></div>
+                    <div><dt>Time</dt><dd id="modalTime"></dd></div>
+                    <div class="wide"><dt>Venue</dt><dd id="modalVenue"></dd></div>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
-        
-        <div class="d-flex align-items-center mb-3">
-            <div class="fs-4 me-3 text-primary"><i class="bi bi-calendar-event"></i></div>
-            <div>
-                <small class="text-muted d-block">Date</small>
-                <span id="modalDate" class="fw-medium"></span>
-            </div>
-        </div>
-
-        <div class="d-flex align-items-center mb-3">
-            <div class="fs-4 me-3 text-primary"><i class="bi bi-clock"></i></div>
-            <div>
-                <small class="text-muted d-block">Time</small>
-                <span id="modalTime" class="fw-medium"></span>
-            </div>
-        </div>
-
-        <div class="d-flex align-items-center mb-3">
-            <div class="fs-4 me-3 text-primary"><i class="bi bi-geo-alt"></i></div>
-            <div>
-                <small class="text-muted d-block">Location</small>
-                <span id="modalVenue" class="fw-medium"></span>
-            </div>
-        </div>
-
-        <div class="d-flex align-items-center">
-            <div class="fs-4 me-3 text-primary"><i class="bi bi-people"></i></div>
-            <div>
-                <small class="text-muted d-block">Audience</small>
-                <span id="modalAudience" class="fw-medium badge bg-secondary"></span>
-            </div>
-        </div>
-      </div>
-      <div class="modal-footer border-0 bg-light">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
     </div>
-  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -184,6 +155,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase-config.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/ui.js"></script>
 <script src="js/calendar.js"></script>
 
 </body>
